@@ -23,7 +23,7 @@ EXPIRES = sys.argv[5]
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.connect((SERVER, PORT))
-    if sys.argv[3] == 'register': 
+    if sys.argv[3] == 'register':
         mensaje = ('REGISTER sip:' + USER + ' SIP/2.0\r\n')
         mensaje += ('EXPIRES: ' + EXPIRES + '\r\n\r\n')
         print(mensaje)
