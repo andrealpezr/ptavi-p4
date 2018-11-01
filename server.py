@@ -7,12 +7,13 @@ import sys
 import time
 import socketserver
 
+
 class SIPRegisterHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
     """
     misdatos = {}
-     
+
     def time_out(self):
         cliente = []
         for client in self.misdatos:
@@ -22,21 +23,23 @@ class SIPRegisterHandler(socketserver.DatagramRequestHandler):
                 cliente.append(client)
         for hora in cliente:
             del self.misdatos[hora]
-                 
-    def handle(self):        
+
+    def handle(self):
         datos = self.rfile.read().decode('utf-8').split()
         if datos[0] == 'REGISTER':
-            self.hora = float(time.time()) + float(datos[-1])            
-            self.expires = time.strftime('%Y-%m-%d %H:%M:%S', 
+            self.hora = float(time.time()) + float(datos[-1])
+            self.expires = time.strftime('%Y-%m-%d %H:%M:%S',
                                          time.gmtime(self.hora))
-            self.datoscliente = {'address': self.client_address[0], 'expires': self.expires}
+            self.datoscliente = {'address': self.client_address[0],
+                                 'expires': self.expires}
             self.misdatos[datos[1].split(':')[-1]] = self.datoscliente
             if int(datos[-1]) == 0:
-                del self.misdatos[datos[1].split(':')[-1]]     
+                del self.misdatos[datos[1].split(':')[-1]]
         self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
         self.time_out()
         print (self.misdatos)
-        
+
+
 if __name__ == "__main__":
     serv = socketserver.UDPServer(('', int(sys.argv[1])), SIPRegisterHandler)
     print("Lanzando servidor UDP de eco...")
